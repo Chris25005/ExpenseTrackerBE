@@ -7,6 +7,7 @@ const generateToken = (userId) => {
 
 // Register User
 export const registerUser = async (req, res, next) => {
+  console.log('auth controller....');
   try {
     const { name, email, password, confirmPassword } = req.body;
 
@@ -24,7 +25,7 @@ export const registerUser = async (req, res, next) => {
     if (existingUser) {
       return res.status(409).json({ message: 'Email already registered' });
     }
-
+console.log('user register...')
     // Create new user
     const user = new User({ name, email, password });
     await user.save();
