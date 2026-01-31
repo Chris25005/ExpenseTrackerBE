@@ -6,7 +6,7 @@ const generateToken = (userId) => {
 };
 
 // Register User
-export const registerUser = async (req, res) => {
+export const registerUser = async (req, res, next) => {
   try {
     const { name, email, password, confirmPassword } = req.body;
 
@@ -37,12 +37,12 @@ export const registerUser = async (req, res) => {
       user: { id: user._id, name: user.name, email: user.email }
     });
   } catch (error) {
-    res.status(500).json({ message: 'Registration failed', error: error.message });
+    next(error);
   }
 };
 
 // Login User
-export const loginUser = async (req, res) => {
+export const loginUser = async (req, res, next) => {
   try {
     const { email, password } = req.body;
 
@@ -71,22 +71,22 @@ export const loginUser = async (req, res) => {
       user: { id: user._id, name: user.name, email: user.email }
     });
   } catch (error) {
-    res.status(500).json({ message: 'Login failed', error: error.message });
+    next(error);
   }
 };
 
 // Get current user
-export const getCurrentUser = async (req, res) => {
+export const getCurrentUser = async (req, res, next) => {
   try {
     const user = await User.findById(req.userId);
     res.status(200).json({ user });
   } catch (error) {
-    res.status(500).json({ message: 'Error fetching user', error: error.message });
+    next(error);
   }
 };
 
 // Update user profile
-export const updateUserProfile = async (req, res) => {
+export const updateUserProfile = async (req, res, next) => {
   try {
     const { name, email } = req.body;
 
@@ -101,6 +101,6 @@ export const updateUserProfile = async (req, res) => {
       user
     });
   } catch (error) {
-    res.status(500).json({ message: 'Update failed', error: error.message });
+    next(error);
   }
 };
