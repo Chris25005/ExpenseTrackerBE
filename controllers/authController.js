@@ -37,6 +37,7 @@ export const registerUser = async (req, res, next) => {
       user: { id: user._id, name: user.name, email: user.email }
     });
   } catch (error) {
+    console.log(error);
     next(error);
   }
 };
