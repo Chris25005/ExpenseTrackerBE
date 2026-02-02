@@ -190,8 +190,8 @@ export const getYearlySummary = async (req, res) => {
       return res.status(400).json({ message: 'Year is required' });
     }
 
-    const startDate = new Date(year, 1, 1);
-    const endDate = new Date(year + 1, 12, 0);
+    const startDate = new Date(year, 0, 1);
+    const endDate = new Date(year + 1, 0, 0);
 
     const transactions = await Transaction.find({
       userId: req.body.userId,
