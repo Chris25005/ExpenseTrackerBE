@@ -3,14 +3,14 @@ import Transaction from '../models/Transaction.js';
 // Create Transaction
 export const createTransaction = async (req, res) => {
   try {
-    const { amount, type, category, description, date, paymentMethod } = req.body;
+    const { amount, type, category, description, date, paymentMethod, userId } = req.body;
 
     if (!amount || !type || !category || !date) {
       return res.status(400).json({ message: 'Missing required fields' });
     }
 
     const transaction = new Transaction({
-      userId: req.userId,
+      userId,
       amount,
       type,
       category,
