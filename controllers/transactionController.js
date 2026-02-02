@@ -117,7 +117,7 @@ export const deleteTransaction = async (req, res) => {
   try {
     const transaction = await Transaction.findOneAndDelete({
       _id: req.params.id,
-      userId: req.body.userId
+      userId: req.params.userId
     });
 
     if (!transaction) {
