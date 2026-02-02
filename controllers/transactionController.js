@@ -32,9 +32,9 @@ export const createTransaction = async (req, res) => {
 // Get all transactions for user
 export const getTransactions = async (req, res) => {
   try {
-    const { startDate, endDate, category, type } = req.query;
+    const { startDate, endDate, category, type, userId } = req.query;
 
-    let filter = { userId: req.userId };
+    let filter = { userId: userId };
 
     if (startDate && endDate) {
       filter.date = {
@@ -67,7 +67,7 @@ export const getTransaction = async (req, res) => {
   try {
     const transaction = await Transaction.findOne({
       _id: req.params.id,
-      userId: req.userId
+      userId: req.body.userId
     });
 
     if (!transaction) {
@@ -87,7 +87,7 @@ export const updateTransaction = async (req, res) => {
 
     let transaction = await Transaction.findOne({
       _id: req.params.id,
-      userId: req.userId
+      userId: req.body.userId
     });
 
     if (!transaction) {
@@ -117,7 +117,7 @@ export const deleteTransaction = async (req, res) => {
   try {
     const transaction = await Transaction.findOneAndDelete({
       _id: req.params.id,
-      userId: req.userId
+      userId: req.body.userId
     });
 
     if (!transaction) {
@@ -146,7 +146,7 @@ export const getMonthlySummary = async (req, res) => {
     const endDate = new Date(year, month, 0);
 
     const transactions = await Transaction.find({
-      userId: req.userId,
+      userId: req.body.userId,
       date: { $gte: startDate, $lte: endDate }
     });
 
@@ -192,7 +192,7 @@ export const getYearlySummary = async (req, res) => {
     const endDate = new Date(year, 11, 31);
 
     const transactions = await Transaction.find({
-      userId: req.userId,
+      userId: req.body.userId,
       date: { $gte: startDate, $lte: endDate }
     });
 
@@ -237,7 +237,7 @@ export const getYearlySummary = async (req, res) => {
 // Get dashboard stats
 export const getDashboardStats = async (req, res) => {
   try {
-    const allTransactions = await Transaction.find({ userId: req.userId }).sort({ date: -1 });
+    const allTransactions = await Transaction.find({ userId: req.body.userId }).sort({ date: -1 });
 
     const totalIncome = allTransactions
       .filter(t => t.type === 'income')
