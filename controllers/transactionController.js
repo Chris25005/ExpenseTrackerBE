@@ -141,8 +141,8 @@ export const getMonthlySummary = async (req, res) => {
       return res.status(400).json({ message: 'Year and month are required' });
     }
 
-    const startDate = new Date(year, month - 1, 1);
-    const endDate = new Date(year, month, 0);
+    const startDate = new Date(year, month, 1);
+    const endDate = new Date(year, month + 1, 0);
 
     const transactions = await Transaction.find({
       userId: req.body.userId,
@@ -187,8 +187,8 @@ export const getYearlySummary = async (req, res) => {
       return res.status(400).json({ message: 'Year is required' });
     }
 
-    const startDate = new Date(year, 0, 1);
-    const endDate = new Date(year, 11, 31);
+    const startDate = new Date(year, 1, 1);
+    const endDate = new Date(year + 1, 12, 0);
 
     const transactions = await Transaction.find({
       userId: req.body.userId,
