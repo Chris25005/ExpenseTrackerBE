@@ -249,7 +249,7 @@ export const getYearlySummary = async (req, res) => {
 // Get dashboard stats
 export const getDashboardStats = async (req, res) => {
   try {
-    const allTransactions = await Transaction.find({ userId: req.body.userId }).sort({ date: -1 });
+    const allTransactions = await Transaction.find({ userId: req.query.userId }).sort({ date: -1 });
 
     const totalIncome = allTransactions
       .filter(t => t.type === 'income')
