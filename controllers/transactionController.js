@@ -115,8 +115,7 @@ export const updateTransaction = async (req, res) => {
 export const deleteTransaction = async (req, res) => {
   try {
     const transaction = await Transaction.findOneAndDelete({
-      _id: req.params.id,
-      userId: req.params.userId
+      _id: req.params.id
     });
 
     if (!transaction) {
