@@ -184,38 +184,49 @@ export const getMonthlySummary = async (req, res) => {
 // Get yearly summary
 export const getYearlySummary = async (req, res) => {
   try {
-    const { year } = req.query;
+    const { year, userId: queryUserId } = req.query; // Capture userId from query
 
     if (!year) {
       return res.status(400).json({ message: 'Year is required' });
     }
 
+    // 1. Create a date range for the entire year
+    // Start: January 1st of the requested year
     const startDate = new Date(year, 0, 1);
-    const endDate = new Date(year + 1, 0, 0);
+    
+    // End: December 31st (Day 0 of next year's January)
+    const endDate = new Date(parseInt(year) + 1, 0, 0);
+    endDate.setHours(23, 59, 59, 999); // Ensure we include the final day's transactions
 
+    // 2. Query transactions using userId from query or middleware
     const transactions = await Transaction.find({
-      userId: req.body.userId,
+      userId: queryUserId || req.userId, 
       date: { $gte: startDate, $lte: endDate }
     });
 
+    // 3. Initialize monthly buckets
     const monthlyData = {};
     for (let i = 1; i <= 12; i++) {
       monthlyData[i] = { income: 0, expense: 0, savings: 0 };
     }
 
+    // 4. Group transactions by month
     transactions.forEach(t => {
+      // getMonth() returns 0-11, so we add 1 to match our 1-12 keys
       const month = t.date.getMonth() + 1;
       if (t.type === 'income') {
         monthlyData[month].income += t.amount;
-      } else {
+      } else if (t.type === 'expense') {
         monthlyData[month].expense += t.amount;
       }
     });
 
+    // 5. Calculate savings for each month
     Object.keys(monthlyData).forEach(month => {
       monthlyData[month].savings = monthlyData[month].income - monthlyData[month].expense;
     });
 
+    // 6. Calculate grand totals
     const totalIncome = transactions
       .filter(t => t.type === 'income')
       .reduce((sum, t) => sum + t.amount, 0);
