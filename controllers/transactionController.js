@@ -66,8 +66,7 @@ export const getTransactions = async (req, res) => {
 export const getTransaction = async (req, res) => {
   try {
     const transaction = await Transaction.findOne({
-      _id: req.params.id,
-      userId: req.params.userId
+      _id: req.params.id
     });
 
     if (!transaction) {
