@@ -135,17 +135,20 @@ export const deleteTransaction = async (req, res) => {
 // Get monthly summary
 export const getMonthlySummary = async (req, res) => {
   try {
-    const { year, month } = req.query;
+    const { year, month, userId: queryUserId } = req.query; // Destructure userId from query
 
     if (!year || !month) {
       return res.status(400).json({ message: 'Year and month are required' });
     }
 
-    const startDate = new Date(year, month, 1);
-    const endDate = new Date(year, month + 1, 0);
+    // Convert month to 0-indexed (2 becomes 1 for February)
+    const monthIndex = parseInt(month) - 1;
+    const startDate = new Date(year, monthIndex, 1);
+    const endDate = new Date(year, monthIndex + 1, 0);
+    endDate.setHours(23, 59, 59, 999); // Include the full last day
 
     const transactions = await Transaction.find({
-      userId: req.body.userId,
+      userId: queryUserId || req.userId, // Use ID from query or middleware
       date: { $gte: startDate, $lte: endDate }
     });
 
